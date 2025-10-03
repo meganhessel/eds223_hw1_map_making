@@ -1,0 +1,244 @@
+---
+title: "ej_screen"
+format: html
+Execute:
+	warning: false 
+---
+
+# Loading Libraries
+
+```{r}
+# Load libraries 
+library(sf) # for vector data (more soon!)
+library(stars) # for raster data (more soon!)
+library(tmap) #or static and interactive maps
+library(here)
+```
+
+# Downloading Data
+
+### World Data
+
+
+### EjScreen data --> LA, East Baton Rouge Parish County
+
+```{r}
+#| echo: true
+#| results: hide
+#Setting up data: filtering for Louisiana, East Baton Rouge Parish County 
+
+# read in geodatabase of EJScreen data at the Census Block Group level
+ejscreen <- sf::st_read(here::here("data", "ejscreen","EJSCREEN_2023_BG_StatePct_with_AS_CNMI_GU_VI.gdb")) 
+
+# filter to a state you are interested in: Lousiana 
+LA <- ejscreen %>%
+  dplyr::filter(ST_ABBREV == "LA") 
+
+# filter to a county you are interested in: East Baton Rouge Parish
+EBRP_LA <- ejscreen %>%
+  dplyr::filter(CNTY_NAME %in% c("East Baton Rouge Parish"))
+
+# find the average values for all variables within counties
+LA_counties <- aggregate(LA, by = list(LA$CNTY_NAME), FUN = mean, na.rm=TRUE)
+
+```
+
+```{r}
+# % people of color 
+peopcolor <- tm_shape(EBRP_LA) + 
+  tm_polygons(fill = 'PEOPCOLORPCT', 
+              fill.scale = tm_scale(values = c("#FEE0A1", "#456D2D")), 
+              fill.legend = tm_legend(title = "Perc of People of Color", 
+                                      orientation = "landscape")) + 
+  tm_title_in('People of Color', position = tm_pos_in("center", "top"), size = 0.8) + 
+  tm_layout(main.title = " ", main.title.size = 1) + 
+  tm_compass(position = c("left", "bottom"))
+
+
+#% low income 
+low_income <- tm_shape(EBRP_LA) + 
+  tm_polygons(fill = 'P_LOWINCPCT', 
+              fill.scale = tm_scale(values = c("#D6E1FE", "#415896")), 
+              fill.legend = tm_legend(title = "Perc of Low Income", 
+                                      orientation = "landscape")) + 
+  tm_layout(main.title = "  Enviormental Injustice in Louisiana", main.title.size = 1) + 
+  tm_title_in('Low Income Population', position = tm_pos_in("center", "top"), size = 0.8)
+
+#   tm_layout(main.title = "East Baton Rouge Parish Cnty", main.title.size = 1) + 
+
+
+# %  Hazardous waste proximity
+sfp <- tm_shape(EBRP_LA) + 
+  tm_polygons(fill = 'P_PTSDF',
+              fill.scale = tm_scale(values = c("#FFC759", "#962525")),
+              fill.legend = tm_legend(title = "Perc of Hazardous Waste Proximity", 
+                                      orientation = "landscape")) + 
+    tm_title_in('Hazardous Waste Proximity', position = tm_pos_in("center", "top"), size = 0.8) + 
+  tm_layout(main.title = " ", main.title.size = 1, main.title.position = "center") + 
+  tm_scalebar()
+
+
+
+
+maps2 <- tmap_arrange(peopcolor, low_income, sfp, ncol = 3)
+maps2
+
+
+
+```
+
+
+```{r}
+# % people of color 
+peopcolor <- tm_shape(EBRP_LA) + 
+  tm_polygons(fill = 'PEOPCOLORPCT', 
+              fill.scale = tm_scale(values = c("#FEE0A1", "#456D2D")), 
+              fill.legend = tm_legend(title = "Perc of people of color", 
+                                      orientation = "landscape")) + 
+  tm_title_in('People of Color', position = tm_pos_in("center", "top"), size = 0.8) + 
+  tm_layout(main.title = "Enviormental Injustice", main.title.size = 1) + 
+  tm_compass(position = c("left", "bottom"))
+
+
+#% low income 
+low_income <- tm_shape(EBRP_LA) + 
+  tm_polygons(fill = 'P_LOWINCPCT', 
+              fill.scale = tm_scale(values = c("#D6E1FE", "#415896")), 
+              fill.legend = tm_legend(title = "Perc of Low Income", 
+                                      orientation = "landscape")) + 
+  tm_layout(main.title = "Low Income Population", main.title.size = 1)
+
+
+
+# %  Hazardous waste proximity
+sfp <- tm_shape(EBRP_LA) + 
+  tm_polygons(fill = 'P_PTSDF',
+              fill.scale = tm_scale(values = c("#FFC759", "#962525")),
+              fill.legend = tm_legend(title = "Perc of Hazardous Waste Proximity", 
+                                      orientation = "landscape")) + 
+  tm_layout(main.title = "Hazardous Waste Proximity", main.title.size = 1) + 
+  tm_scalebar()
+
+
+
+
+maps <- tmap_arrange(peopcolor, low_income, sfp, ncol = 3)
+maps
+
+```
+
+```{r}
+
+
+# ----- 
+install.packages('gridExtra')
+library(gridExtra)
+library(grid)
+
+grid.arrange(
+  tmap_arrange(peopcolor, low_income, sfp, ncol = 3),
+  top = "Environmental Justice Indicators in LA"
+)
+
+
+grid.newpage()
+grid.draw(maps)
+
+
+grid.arrange(
+  arrangeGrob(grobs = maps),
+  top = textGrob("Environmental Justice Indicators in LA",
+                 gp = gpar(fontsize = 16, fontface = "bold"))
+)
+
+?tmap_arrange()
+
+
+
+
+# % Underground storage tanks Supplemental Index
+under_st <- tm_shape(EBRP_LA) + 
+  tm_polygons(fill = 'P_D5_UST', 
+              fill.scale = tm_scale(values = c("#EBD5FF", "#7424BE")), 
+              fill.legend = tm_legend(title = "Perc of Undergound storage tanks (SI)", 
+                                      orientation = "landscape")) +   
+  tm_title("Underground Storage Tanks") 
+
+
+# %  Hazardous waste proximity
+sfp <- tm_shape(EBRP_LA) + 
+  tm_polygons(fill = 'P_PTSDF',
+              fill.legend = tm_legend(title = "Perc of Hazardous Waste Proximity", 
+                                      orientation = "landscape")) + 
+  tm_title("Hazardous Waste Proximity") 
+
+tmap_arrange(under_st, sfp)
+
+
+
+P_D5_PWDIS
+
+Diesel_pm <- tm_shape(EBRP_LA) + 
+  tm_polygons(fill = 'P_DSLPM',
+              fill.scale = tm_scale(values = c("#EBD5FF", "#7424BE")),
+              fill.legend = tm_legend(title = "Perc of Disesel PM (EJ Index)", 
+                                      orientation = "landscape")) + 
+  tm_title("Diesel Particulate Matter") 
+
+
+tmap_arrange(peopcolor, low_income, sfp, ncol = 3, widths = c(4, 4, 4), heights = c(4, 4, 4))
+
+```
+
+
+### Trying to download USA State polygons 
+
+```{r}
+
+tmap_arrange(peopcolor, sfp)
+
+
+tm_shape(EBRP_LA) + 
+  tm_polygons(fill = 'P_D2_RSEI_AIR') # Percentile for Toxic Releases to Air EJ Index
+
+
+tm_shape(EBRP_LA) + 
+  tm_polygons(fill = 'P_CANCER') # % cancer
+
+
+low_income <- tm_shape(EBRP_LA) + 
+  tm_polygons(fill = 'P_LOWINCPCT') #% low income 
+
+
+under_st <- tm_shape(EBRP_LA) + 
+  tm_polygons(fill = 'P_D5_UST') # % Underground storage tanks Supplemental Index
+
+tmap_arrange(peopcolor, low_income, sfp, under_st)
+
+
+
+
+tm_shape(us_states$geometry) + 
+  tm_polygons()
+
+
+
+
+install.packages("tigris")
+install.packages("sf")
+
+library(tigris)
+library(sf)
+
+# Download state polygons for the US as an sf object
+us_states <- states(cb = TRUE)
+
+# View the downloaded data
+tm_shape(us_states)+ 
+  tm_polygons()
+
+install.packages("USA.state.boundaries")
+library("USA.state.boundaries")
+
+```
+
