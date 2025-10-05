@@ -1,12 +1,14 @@
 ---
-title: "ej_sceen1"
-format: html
+title: "homework1"
+format:
+  pdf: default
+  html: default
 editor: visual
 execute: 
   warning: false
 ---
 
-# **HW1: Exploring Environmental Injustice**
+# **Exploring Environmental Injustice**
 
 ## Loading libraries
 
@@ -45,7 +47,7 @@ LA_counties <- aggregate(LA, by = list(LA$CNTY_NAME), FUN = mean, na.rm=TRUE)
 
 ## [**Making maps**]{.underline}
 
-### Main Map
+### Main Maps
 
 1.  People of color Map
 
@@ -89,7 +91,7 @@ tmap_save(map_final, here::here("figs", "envir_injust_main_map.jpg"), width = 10
 
 ```
 
-### The Other Map
+### Other Map I Made
 
 ```{r}
 
