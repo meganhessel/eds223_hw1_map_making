@@ -6,13 +6,13 @@ The purpose of this repository is to practice `tmap` skills.
 
 ### Structure:
 
--   Data:
+-   Data: All downloadable data 
 
--   Figs:
+-   Figs: All created figures 
 
--   IDK:
+-   Docs: hmtl documents 
 
--   IDK:
+-   ed_screen,qmd = main quarto file with final code 
 
 ### Data Access:
 

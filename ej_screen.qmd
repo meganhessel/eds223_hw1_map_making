@@ -1,11 +1,14 @@
 ---
-title: "ej_screen"
+title: "ej_sceen1"
 format: html
-Execute:
-	warning: false 
+editor: visual
+execute: 
+  warning: false
 ---
 
-# Loading Libraries
+# **HW1: Exploring Environmental Injustice**
+
+## Loading libraries
 
 ```{r}
 # Load libraries 
@@ -15,12 +18,9 @@ library(tmap) #or static and interactive maps
 library(here)
 ```
 
-# Downloading Data
+## Downloading Data
 
-### World Data
-
-
-### EjScreen data --> LA, East Baton Rouge Parish County
+EjScreen All Data -\> LA, East Baton Rouge Parish County
 
 ```{r}
 #| echo: true
@@ -43,202 +43,101 @@ LA_counties <- aggregate(LA, by = list(LA$CNTY_NAME), FUN = mean, na.rm=TRUE)
 
 ```
 
+## [**Making maps**]{.underline}
+
+### Main Map
+
+1.  People of color Map
+
+2.  Hazardous Waste Proximity Map
+
+This map illustrates the relationship between predominantly People of Color communities and their proximity to hazardous waste sites in East Baton Rouge Parish, Louisiana. The state, especially in the Baton Rouge area and around the Mississippi River, has a long history of weak regulations of petrochemical industries and fossil fuels, highlighting the environmental racism and systemic inequities (Antonia Juhasz, 2024). Within East Baton Rouge Parish, communities of Color are concentrated in the central region where they are disproportionately situated near hazardous waste sites, displaying ongoing environmental injustice.
+
 ```{r}
-# % people of color 
+
+# People of Color Map 
+pcol <- tm_shape(EBRP_LA) + 
+  tm_polygons(fill = 'PEOPCOLORPCT', #filling with the PofC column 
+              fill.legend = tm_legend(title = "Percentile for % People of Color", 
+                                      orientation = "landscape"), 
+              fill.scale = tm_scale(values = c("#FEE0A1", "#456D2D"))) + 
+ tm_title_in('People of Color Population', position = tm_pos_in("center", "top"), size = 1) + 
+  tm_layout(main.title = "Enviormental Injustice in Lousiana, East Baton Rouge Parish County ", main.title.size = 1.5) + 
+  tm_compass(position = c("left", "bottom")) + 
+  tm_credits("Data Source: EJSCREEN", 
+             position = c("right", "bottom"))
+
+
+# Hazardous Waste Proximity Map 
+phw <- tm_shape(EBRP_LA) + 
+  tm_polygons(fill = 'P_PTSDF', # filling wth HWP column 
+              fill.legend = tm_legend(title = "Percentile for Hazardous Waste Proximity", 
+                                      orientation = "landscape"), 
+              fill.scale = tm_scale(values = c("#FFC759", "#962525"))) + 
+tm_title_in('Hazardous Waste Proximity', position = tm_pos_in("center", "top"), size = 1) + 
+  tm_layout(main.title = "  ", main.title.size = 1.5) + 
+tm_scalebar()
+
+
+# Using `tmap_arrange` to put maps together in 1 layout 
+map_final <- tmap_arrange(pcol, phw, ncol = 2) 
+map_final
+
+# Saving the Map 
+tmap_save(map_final, here::here("figs", "envir_injust_main_map.jpg"), width = 10, height = 7)
+
+
+```
+
+### The Other Map
+
+```{r}
+
+# % People of Color Map 
 peopcolor <- tm_shape(EBRP_LA) + 
   tm_polygons(fill = 'PEOPCOLORPCT', 
               fill.scale = tm_scale(values = c("#FEE0A1", "#456D2D")), 
-              fill.legend = tm_legend(title = "Perc of People of Color", 
+              fill.legend = tm_legend(title = "Percentile for % People of Color", 
                                       orientation = "landscape")) + 
-  tm_title_in('People of Color', position = tm_pos_in("center", "top"), size = 0.8) + 
-  tm_layout(main.title = " ", main.title.size = 1) + 
-  tm_compass(position = c("left", "bottom"))
+  tm_title_in('People of Color', position = tm_pos_in("center", "top"), size = 1) + 
+  tm_layout(main.title = "Enviormental Injustice in Lousiana", main.title.size = 1) + 
+  tm_compass(position = c("left", "bottom")) + 
+  tm_credits("Data Source: EJSCREEN from EPA", 
+             position = c("right", "bottom"))
 
 
-#% low income 
+# % Low Income Map  
 low_income <- tm_shape(EBRP_LA) + 
   tm_polygons(fill = 'P_LOWINCPCT', 
               fill.scale = tm_scale(values = c("#D6E1FE", "#415896")), 
-              fill.legend = tm_legend(title = "Perc of Low Income", 
+              fill.legend = tm_legend(title = "Percentile for % Low Income", 
                                       orientation = "landscape")) + 
-  tm_layout(main.title = "  Enviormental Injustice in Louisiana", main.title.size = 1) + 
-  tm_title_in('Low Income Population', position = tm_pos_in("center", "top"), size = 0.8)
-
-#   tm_layout(main.title = "East Baton Rouge Parish Cnty", main.title.size = 1) + 
+    tm_title_in("Low Income Population", position = tm_pos_in("center", "top"), size = 1) +
+  tm_layout(main.title = "  ", main.title.size = 1)
 
 
-# %  Hazardous waste proximity
+
+# % Hazardous waste proximity
 sfp <- tm_shape(EBRP_LA) + 
   tm_polygons(fill = 'P_PTSDF',
               fill.scale = tm_scale(values = c("#FFC759", "#962525")),
-              fill.legend = tm_legend(title = "Perc of Hazardous Waste Proximity", 
+              fill.legend = tm_legend(title = "Percentile for Hazardous Waste Proximity", 
                                       orientation = "landscape")) + 
-    tm_title_in('Hazardous Waste Proximity', position = tm_pos_in("center", "top"), size = 0.8) + 
-  tm_layout(main.title = " ", main.title.size = 1, main.title.position = "center") + 
+  tm_layout(main.title = "  ", main.title.size = 1) + 
+  tm_title_in("Hazardous Waste Proximity", position = tm_pos_in("center", "top"), size = 1) + 
   tm_scalebar()
 
+# Using `tmap_arrange` to put maps together in 1 layout 
+map <- tmap_arrange(peopcolor, low_income, sfp, ncol = 3)
+map
 
-
-
-maps2 <- tmap_arrange(peopcolor, low_income, sfp, ncol = 3)
-maps2
-
-
-
-```
-
-
-```{r}
-# % people of color 
-peopcolor <- tm_shape(EBRP_LA) + 
-  tm_polygons(fill = 'PEOPCOLORPCT', 
-              fill.scale = tm_scale(values = c("#FEE0A1", "#456D2D")), 
-              fill.legend = tm_legend(title = "Perc of people of color", 
-                                      orientation = "landscape")) + 
-  tm_title_in('People of Color', position = tm_pos_in("center", "top"), size = 0.8) + 
-  tm_layout(main.title = "Enviormental Injustice", main.title.size = 1) + 
-  tm_compass(position = c("left", "bottom"))
-
-
-#% low income 
-low_income <- tm_shape(EBRP_LA) + 
-  tm_polygons(fill = 'P_LOWINCPCT', 
-              fill.scale = tm_scale(values = c("#D6E1FE", "#415896")), 
-              fill.legend = tm_legend(title = "Perc of Low Income", 
-                                      orientation = "landscape")) + 
-  tm_layout(main.title = "Low Income Population", main.title.size = 1)
-
-
-
-# %  Hazardous waste proximity
-sfp <- tm_shape(EBRP_LA) + 
-  tm_polygons(fill = 'P_PTSDF',
-              fill.scale = tm_scale(values = c("#FFC759", "#962525")),
-              fill.legend = tm_legend(title = "Perc of Hazardous Waste Proximity", 
-                                      orientation = "landscape")) + 
-  tm_layout(main.title = "Hazardous Waste Proximity", main.title.size = 1) + 
-  tm_scalebar()
-
-
-
-
-maps <- tmap_arrange(peopcolor, low_income, sfp, ncol = 3)
-maps
+# Saving the Map 
+tmap_save(map, here::here("figs", "envir_injust_other.jpg"), width = 10, height = 5.5)
 
 ```
 
-```{r}
+[CITATIONS]{.underline}
 
+Antonia Juhasz. (2024). “We’re Dying Here.” *Human Rights Watch*. https://www.hrw.org/report/2024/01/25/were-dying-here/fight-life-louisiana-fossil-fuel-sacrifice-zone
 
-# ----- 
-install.packages('gridExtra')
-library(gridExtra)
-library(grid)
-
-grid.arrange(
-  tmap_arrange(peopcolor, low_income, sfp, ncol = 3),
-  top = "Environmental Justice Indicators in LA"
-)
-
-
-grid.newpage()
-grid.draw(maps)
-
-
-grid.arrange(
-  arrangeGrob(grobs = maps),
-  top = textGrob("Environmental Justice Indicators in LA",
-                 gp = gpar(fontsize = 16, fontface = "bold"))
-)
-
-?tmap_arrange()
-
-
-
-
-# % Underground storage tanks Supplemental Index
-under_st <- tm_shape(EBRP_LA) + 
-  tm_polygons(fill = 'P_D5_UST', 
-              fill.scale = tm_scale(values = c("#EBD5FF", "#7424BE")), 
-              fill.legend = tm_legend(title = "Perc of Undergound storage tanks (SI)", 
-                                      orientation = "landscape")) +   
-  tm_title("Underground Storage Tanks") 
-
-
-# %  Hazardous waste proximity
-sfp <- tm_shape(EBRP_LA) + 
-  tm_polygons(fill = 'P_PTSDF',
-              fill.legend = tm_legend(title = "Perc of Hazardous Waste Proximity", 
-                                      orientation = "landscape")) + 
-  tm_title("Hazardous Waste Proximity") 
-
-tmap_arrange(under_st, sfp)
-
-
-
-P_D5_PWDIS
-
-Diesel_pm <- tm_shape(EBRP_LA) + 
-  tm_polygons(fill = 'P_DSLPM',
-              fill.scale = tm_scale(values = c("#EBD5FF", "#7424BE")),
-              fill.legend = tm_legend(title = "Perc of Disesel PM (EJ Index)", 
-                                      orientation = "landscape")) + 
-  tm_title("Diesel Particulate Matter") 
-
-
-tmap_arrange(peopcolor, low_income, sfp, ncol = 3, widths = c(4, 4, 4), heights = c(4, 4, 4))
-
-```
-
-
-### Trying to download USA State polygons 
-
-```{r}
-
-tmap_arrange(peopcolor, sfp)
-
-
-tm_shape(EBRP_LA) + 
-  tm_polygons(fill = 'P_D2_RSEI_AIR') # Percentile for Toxic Releases to Air EJ Index
-
-
-tm_shape(EBRP_LA) + 
-  tm_polygons(fill = 'P_CANCER') # % cancer
-
-
-low_income <- tm_shape(EBRP_LA) + 
-  tm_polygons(fill = 'P_LOWINCPCT') #% low income 
-
-
-under_st <- tm_shape(EBRP_LA) + 
-  tm_polygons(fill = 'P_D5_UST') # % Underground storage tanks Supplemental Index
-
-tmap_arrange(peopcolor, low_income, sfp, under_st)
-
-
-
-
-tm_shape(us_states$geometry) + 
-  tm_polygons()
-
-
-
-
-install.packages("tigris")
-install.packages("sf")
-
-library(tigris)
-library(sf)
-
-# Download state polygons for the US as an sf object
-us_states <- states(cb = TRUE)
-
-# View the downloaded data
-tm_shape(us_states)+ 
-  tm_polygons()
-
-install.packages("USA.state.boundaries")
-library("USA.state.boundaries")
-
-```
-
+United States Environmental Protection Agency. *EJScreen: Environmental Justice Screening and Mapping Tool*. \*\*(this does not exist anymore, so it's hard to cite it)\*\*
