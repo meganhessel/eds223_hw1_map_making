@@ -47,11 +47,11 @@ LA_counties <- aggregate(LA, by = list(LA$CNTY_NAME), FUN = mean, na.rm=TRUE)
 
 ## [**Making maps**]{.underline}
 
-### Main Maps
+### 2 Main Maps Together
 
-1.  People of color Map
+1.  Map 1: People of color Map
 
-2.  Hazardous Waste Proximity Map
+2.  Map 2: Hazardous Waste Proximity Map
 
 This map illustrates the relationship between predominantly People of Color communities and their proximity to hazardous waste sites in East Baton Rouge Parish, Louisiana. The state, especially in the Baton Rouge area and around the Mississippi River, has a long history of weak regulations of petrochemical industries and fossil fuels, highlighting the environmental racism and systemic inequities (Antonia Juhasz, 2024). Within East Baton Rouge Parish, communities of Color are concentrated in the central region where they are disproportionately situated near hazardous waste sites, displaying ongoing environmental injustice.
 
@@ -66,7 +66,7 @@ pcol <- tm_shape(EBRP_LA) +
  tm_title_in('People of Color Population', position = tm_pos_in("center", "top"), size = 1) + 
   tm_layout(main.title = "Enviormental Injustice in Lousiana, East Baton Rouge Parish County ", main.title.size = 1.5) + 
   tm_compass(position = c("left", "bottom")) + 
-  tm_credits("Data Source: EJSCREEN", 
+  tm_credits("Data Source: EJSCREEN from EPA", 
              position = c("right", "bottom"))
 
 
@@ -87,6 +87,8 @@ map_final
 
 # Saving the Map 
 tmap_save(map_final, here::here("figs", "envir_injust_main_map.jpg"), width = 10, height = 7)
+# The saved map is WAY prettier than the output map display 
+
 
 
 ```
@@ -135,6 +137,7 @@ map
 
 # Saving the Map 
 tmap_save(map, here::here("figs", "envir_injust_other.jpg"), width = 10, height = 5.5)
+# The saved map is WAY prettier than the output map display 
 
 ```
 
