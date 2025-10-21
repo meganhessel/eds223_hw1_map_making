@@ -1,10 +1,10 @@
 # EDS 223 Hwk 1
 
-## Map Making Practice
+## Exploring Environmental Injustice
 
-## Exploring environmental (in)justice
+### Map Making Practice
 
-The purpose of this repository is to practice `tmap` skills by creating 2 maps that communicates an environmental justice issue
+The purpose of this repository is to practice `tmap` skills by creating 2 maps that communicates an environmental justice issue in a county of our choosing. This repository focuses on Hazardous Waste Proximity in People of Color and low income communities in East Baton Rouge Parish County, Louisiana.
 
 ### Structure:
 
@@ -32,4 +32,4 @@ Data information:
 
 **Acknowledgements:**
 
--   I would like to thank Dr. Annie Adams and Ale Vidal Meza for helping in the creation and development of this project
+-   I would like to thank Dr. Annie Adams and Ale Vidal Meza for helping in the creation and development of this project.

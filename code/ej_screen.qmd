@@ -1,5 +1,5 @@
 ---
-title: "homework1"
+title: "EDS223 hw1: Envir. Injustice"
 author: Megan Hessel
 date: September 25, 2025
 format:
@@ -11,6 +11,10 @@ execute:
 ---
 
 # **Exploring Environmental Injustice**
+
+## Map Making Practice
+
+------------------------------------------------------------------------
 
 ## Loading libraries
 
