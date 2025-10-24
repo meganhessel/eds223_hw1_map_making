@@ -1,5 +1,5 @@
 ---
-title: "EDS223 hw1: Envir. Injustice"
+title: "EDS223 hw1: Envir. Injustice in Louisiana"
 author: Megan Hessel
 date: September 25, 2025
 format:

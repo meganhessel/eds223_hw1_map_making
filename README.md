@@ -8,11 +8,24 @@ The purpose of this repository is to practice `tmap` skills by creating 2 maps t
 
 ### Structure:
 
--   Data: All downloadable data
-
--   Figs: All created figures
-
--   Code: final quarto file with its rendered html and pdf
+```
+code/
+    ├── ej_screen_w:_fig.pdf
+    ├── ej_screen.html
+    ├── ej_screen.pdf
+    └── ej_screen.qmd
+figs/
+    ├── envir_injust_main_map.jpg
+    └── envir_injust_other.jpg
+data/
+    ├── easter-island
+    └── ejscreen
+.DS_Store
+.gitignore
+eds223_hw1_map_making.Rproj
+README.md
+scratch_work.qmd
+```
 
 ### Data:
 
