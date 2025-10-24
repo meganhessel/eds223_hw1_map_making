@@ -1,4 +1,4 @@
-# EDS 223 Hwk 1
+# EDS 223 Hwk 1 Envir Injustice LA
 
 ## Exploring Environmental Injustice
 
